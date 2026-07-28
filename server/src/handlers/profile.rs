@@ -12,6 +12,7 @@ use axum::{
     extract::{Path, Query, State},
     http::HeaderMap,
     response::{IntoResponse, Response},
+    Extension,
     Json,
 };
 use sqlx::{PgPool, Postgres, QueryBuilder};
@@ -232,7 +233,7 @@ pub async fn upsert_profile(
     Json(payload): Json<UpsertProfileRequest>,
 ) -> Response {
     // Authenticate
-    let address = match extract_auth(&headers) {
+    let address = match extract_auth(&headers, &config) {
         Ok(a) => a,
         Err(e) => return e.into_response(),
     };
